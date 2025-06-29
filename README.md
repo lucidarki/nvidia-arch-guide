@@ -1,13 +1,13 @@
 Pre-Installation
 
-Make sure you updated your system to the latest version
-sudo pacman -Sy
-sudo pacman -Syu
+Make sure you have fully updated your system to the latest version
+<pre>sudo pacman -Sy</pre>
+<pre>sudo pacman -Syu</pre>
 
 Step 1
 
-Make sure you have installed linux-headers and the dkms package
-<pre>sudo pacman -S linux-headers dkms</pre>
+Make sure you have installed linux-headers, nano and the dkms package
+<pre>sudo pacman -S linux-headers dkms nano</pre>
 
 Step 2
 
@@ -17,10 +17,88 @@ Install the base Nvidia packages
 Step 3
 
 Now edit the /etc/mkinitcpio.conf file
-And go to the 7th line where it says 
+<pre>sudo nano /etc/mkinitcpio.conf</pre>
+
+And go to the 7th line where it says
 
 MODULES=()
 
 Now change it to
 
 MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+
+Now save the file with
+Ctrl X then type Y and press enter until you comeback to your terminal
+
+Step 4
+
+Now edit your systemd-boot .conf file
+For example /boot/loader/entries/arch.conf
+
+Now you should see something like this:
+
+title Arch
+
+linux /vmlinuz linux
+
+initrd /initramfs-linux.img
+
+options root=UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx rw
+
+
+and now change the last line to
+
+options root=UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx rw nvidia_drm.modeset=1
+
+
+Now save the file
+
+Step 5
+
+Make a hook to actually load the drivers on startup
+
+First of all make a directory that containsthe hooks
+<pre>sudo mkdir /etc/pacman.d/hooks</pre>
+
+And now create a file where it contains the hooks for the Nvidia Drivers
+<pre>sudo nano /etc/pacman.d/hooks/nvidia.hook</pre>
+
+Then copy it exactly like this in the file:
+
+
+[Trigger]
+
+Operation=Install
+
+Operation=Upgrade
+
+Operation=Remove
+
+Type=Package
+
+Target=nvidia
+
+
+[Action]
+
+Depends=mkinitcpio
+
+When=PostTransaction
+
+Exec=/usr/bin/mkinitcpio -P
+
+
+
+Save the file
+
+
+
+Step 6
+
+Finally reboot the system
+
+<pre>reboot</pre>
+
+
+
+
