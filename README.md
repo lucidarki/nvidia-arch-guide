@@ -12,7 +12,7 @@ sudo pacman -S linux-headers dkms
 Step 2
 
 Install the base Nvidia packages
-sudo pacman -S nvidia-dkms libglvnd nvidia-utils opencl-nvidia lib32-libglvnd lib32-nvidia-utils lib32-opencl-nvidia nvidia-settings
+<pre> ```sudo pacman -S nvidia-dkms libglvnd nvidia-utils opencl-nvidia lib32-libglvnd lib32-nvidia-utils lib32-opencl-nvidia nvidia-settings``` </pre>
 
 Step 3
 
